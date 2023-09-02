@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HousingLocation } from '../housinglocation';
 import { HousingService } from '../housing.service';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <article>
       <img
@@ -32,11 +33,32 @@ import { HousingService } from '../housing.service';
           </li>
         </ul>
       </section>
+
+      <section class="listing-apply">
+        <h2 class="section-heading">Apply now to live here (look in console)</h2>
+        <form [formGroup]="applyForm" (submit)="submitApplication()">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" formControlName='firstName'>
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" formControlName='lastName'>
+          <label for="email">Email</label>
+          <input type="text" id="email" formControlName='email'>
+          <button type="submit" class="primary">Apply now</button>
+        </form>
+      </section>
+
     </article>
   `,
   styleUrls: ['./details.component.css'],
 })
 export class DetailsComponent {
+
+  applyForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    email: new FormControl('')
+  });
+
   constructor() {
     this.housingLocationId = Number(this.route.snapshot.params['id']);
     this.housingLocation = this.housingService.getHousingLocationById(
@@ -49,4 +71,12 @@ export class DetailsComponent {
 
   housingService = inject(HousingService);
   housingLocation: HousingLocation | undefined;
+
+  submitApplication() {
+    this.housingService.submitApplication(
+      this.applyForm.value.firstName ?? '',
+      this.applyForm.value.lastName ?? '',
+      this.applyForm.value.email ?? '',
+    )
+  }
 }

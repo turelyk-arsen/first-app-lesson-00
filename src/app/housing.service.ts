@@ -16,7 +16,9 @@ export class HousingService {
     return this.housingLocationList.find(housingLocation => 
       housingLocation.id === id);
   }
-
+  submitApplication(firstName: string, lastName: string, email: string) {
+    console.log(`Home app received: firstName: ${firstName}, lastName: ${lastName}, email: ${email}`)
+  }
   readonly baseUrl = 'https://angular.io/assets/images/tutorials/faa';
 
     housingLocationList: HousingLocation[] = [
